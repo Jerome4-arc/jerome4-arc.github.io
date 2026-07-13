@@ -29,6 +29,8 @@ local function getCommands()
 	end
 
 
+	warn("Failed to get Firebase commands")
+
 	return nil
 
 end
@@ -66,19 +68,21 @@ end
 local function findPlayer(target)
 
 
-	-- Try username
+	-- Username
 
 	local player =
 	Players:FindFirstChild(target)
 
 
 	if player then
+
 		return player
+
 	end
 
 
 
-	-- Try UserId
+	-- User ID
 
 	local id =
 	tonumber(target)
@@ -101,6 +105,53 @@ local function findPlayer(target)
 
 
 	return nil
+
+end
+
+
+
+
+
+
+
+-- Checks if a timed kick is still active
+local function isKickActive(command)
+
+
+	if not command.expiresAt then
+
+		return false, 0
+
+	end
+
+
+
+	-- Firebase uses milliseconds
+	-- Roblox uses seconds
+
+	local expireTime =
+	command.expiresAt / 1000
+
+
+
+	local currentTime =
+	os.time()
+
+
+
+	local remainingSeconds =
+	expireTime - currentTime
+
+
+
+	local remainingMinutes =
+	math.floor(
+		remainingSeconds / 60
+	)
+
+
+
+	return currentTime < expireTime, remainingMinutes
 
 end
 
@@ -134,23 +185,67 @@ while true do
 
 
 
-				if player then
+
+
+				if command.action == "kick" then
 
 
 
-					if command.action == "kick" then
-
-
-						player:Kick(
-							"Removed by moderator: "
-							..
-							command.reason
-						)
+					local active, remaining =
+					isKickActive(command)
 
 
 
-					elseif command.action == "ban" then
+					if active then
 
+
+
+						if player then
+
+
+
+							player:Kick(
+
+								"Removed by moderator: "
+								..
+								command.reason
+								..
+								"\nTime remaining: "
+								..
+								remaining
+								..
+								" minutes"
+
+							)
+
+
+
+						end
+
+
+
+					else
+
+
+						-- Kick expired
+
+						completeCommand(id)
+
+
+
+					end
+
+
+
+
+
+
+				elseif command.action == "ban" then
+
+
+
+
+					if player then
 
 
 						player:Kick(
@@ -162,17 +257,15 @@ while true do
 						)
 
 
-
 					end
 
 
 
+					completeCommand(id)
+
+
+
 				end
-
-
-
-
-				completeCommand(id)
 
 
 
