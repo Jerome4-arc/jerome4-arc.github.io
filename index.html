@@ -588,115 +588,440 @@ This is your logging database:
 https://moderationpanel-86889-default-rtdb.firebaseio.com/
 */
 
-const FIREBASE_DATABASE = "https://moderationpanel-86889-default-rtdb.firebaseio.com";
+const FIREBASE_DATABASE =
+"https://moderationpanel-86889-default-rtdb.firebaseio.com";
+
 const COMMAND_LOCATION = "/commands.json";
 const LOG_LOCATION = "/logs.json";
 const HISTORY_LOCATION = "/banHistory.json";
 
+
+
 function openPage(page) {
+
   document.querySelectorAll(".main > div").forEach(section => {
+
     section.classList.add("hidden");
+
   });
+
 
   document.getElementById(page).classList.remove("hidden");
 
-  if (page === "logs") {
+
+  if(page === "logs") {
+
     loadLogs();
+
   }
 
-  if (page === "history") {
+
+  if(page === "history") {
+
     loadHistory();
+
   }
+
 }
 
+
+
+
+
 function updateDurations() {
-  const action = document.getElementById("action").value;
-  const duration = document.getElementById("duration");
+
+  const action =
+  document.getElementById("action").value;
+
+
+  const duration =
+  document.getElementById("duration");
+
+
   duration.innerHTML = "";
 
-  if (action === "kick") {
+
+
+  if(action === "kick") {
+
+
     duration.innerHTML = `
+
       <option value="30">30 Minutes</option>
       <option value="60">1 Hour</option>
       <option value="120">2 Hours</option>
       <option value="360">6 Hours</option>
       <option value="720">12 Hours</option>
       <option value="1440">1 Day</option>
+
     `;
+
+
   } else {
+
+
     duration.innerHTML = `
-      <option value="1">1 Day</option>
-      <option value="3">3 Days</option>
-      <option value="7">1 Week</option>
-      <option value="30">1 Month</option>
+
+      <option value="1440">1 Day</option>
+      <option value="4320">3 Days</option>
+      <option value="10080">1 Week</option>
+      <option value="43200">1 Month</option>
       <option value="permanent">Permanent</option>
+
     `;
+
   }
+
 }
+
+
+
+
+
+
 
 async function sendCommand() {
+
+
+  const target =
+  document.getElementById("target").value;
+
+
+  if(target.trim() === "") {
+
+    document.getElementById("status").innerText =
+    "Enter a target.";
+
+    return;
+
+  }
+
+
+
+  const createdAt =
+  Date.now();
+
+
+
+  let durationValue =
+  document.getElementById("duration").value;
+
+
+
+  let durationMinutes;
+
+
+
+  if(durationValue === "permanent") {
+
+
+    // 50 years in minutes
+
+    durationMinutes =
+    50 * 365 * 24 * 60;
+
+
+  } else {
+
+
+    durationMinutes =
+    Number(durationValue);
+
+
+  }
+
+
+
+
+
   const command = {
-    targetType: document.getElementById("targetType").value,
-    target: document.getElementById("target").value,
-    action: document.getElementById("action").value,
-    duration: document.getElementById("duration").value,
-    reason: document.getElementById("reason").value,
-    createdAt: Date.now()
+
+
+    targetType:
+    document.getElementById("targetType").value,
+
+
+    target:
+    target,
+
+
+    action:
+    document.getElementById("action").value,
+
+
+    // minutes
+
+    duration:
+    durationMinutes,
+
+
+    // UTC milliseconds
+
+    createdAt:
+    createdAt,
+
+
+    // UTC milliseconds
+
+    expiresAt:
+    createdAt + (durationMinutes * 60 * 1000),
+
+
+
+    reason:
+    document.getElementById("reason").value || "No reason provided"
+
+
   };
 
-  await fetch(FIREBASE_DATABASE + COMMAND_LOCATION, {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify(command)
-  });
 
-  await fetch(FIREBASE_DATABASE + LOG_LOCATION, {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({
-      action: command.action,
-      target: command.target,
-      reason: command.reason,
-      createdAt: Date.now()
-    })
-  });
 
-  if (command.action === "ban") {
-    await fetch(FIREBASE_DATABASE + HISTORY_LOCATION, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(command)
+
+  try {
+
+
+
+    await fetch(FIREBASE_DATABASE + COMMAND_LOCATION, {
+
+      method:"POST",
+
+      headers:{
+
+        "Content-Type":"application/json"
+
+      },
+
+      body:
+
+      JSON.stringify(command)
+
     });
+
+
+
+
+
+
+    await fetch(FIREBASE_DATABASE + LOG_LOCATION, {
+
+      method:"POST",
+
+      headers:{
+
+        "Content-Type":"application/json"
+
+      },
+
+      body:
+
+      JSON.stringify({
+
+        action:
+        command.action,
+
+
+        target:
+        command.target,
+
+
+        reason:
+        command.reason,
+
+
+        createdAt:
+        createdAt
+
+      })
+
+    });
+
+
+
+
+
+
+
+    if(command.action === "ban") {
+
+
+
+      await fetch(FIREBASE_DATABASE + HISTORY_LOCATION, {
+
+
+        method:"POST",
+
+
+        headers:{
+
+          "Content-Type":"application/json"
+
+        },
+
+
+        body:
+
+        JSON.stringify(command)
+
+
+      });
+
+
+    }
+
+
+
+
+
+
+    document.getElementById("status").innerText =
+    "Command sent to Roblox system.";
+
+
+
+
+
+  } catch(error) {
+
+
+    console.error(error);
+
+
+    document.getElementById("status").innerText =
+    "Failed to send command.";
+
   }
 
-  document.getElementById("status").innerText = "Command sent to Roblox system.";
+
 }
+
+
+
+
+
+
 
 async function loadLogs() {
-  const response = await fetch(FIREBASE_DATABASE + LOG_LOCATION);
-  const logs = await response.json();
-  const table = document.getElementById("logsTable");
-  table.innerHTML = `<tr><th>Action</th><th>User</th><th>Date</th></tr>`;
 
-  if (logs) {
-    Object.values(logs).reverse().forEach(log => {
-      table.innerHTML += `<tr><td>${log.action}</td><td>${log.target}</td><td>${new Date(log.createdAt).toLocaleString()}</td></tr>`;
+
+  const response =
+  await fetch(FIREBASE_DATABASE + LOG_LOCATION);
+
+
+
+  const logs =
+  await response.json();
+
+
+
+  const table =
+  document.getElementById("logsTable");
+
+
+
+  table.innerHTML =
+  `<tr><th>Action</th><th>User</th><th>Date</th></tr>`;
+
+
+
+  if(logs) {
+
+
+    Object.values(logs)
+    .reverse()
+    .forEach(log => {
+
+
+      table.innerHTML +=
+
+      `
+
+      <tr>
+
+      <td>${log.action}</td>
+
+      <td>${log.target}</td>
+
+      <td>${new Date(log.createdAt).toLocaleString()}</td>
+
+      </tr>
+
+      `;
+
+
     });
+
+
   }
+
+
 }
+
+
+
+
+
+
+
 
 async function loadHistory() {
-  const response = await fetch(FIREBASE_DATABASE + HISTORY_LOCATION);
-  const history = await response.json();
-  const table = document.getElementById("historyTable");
-  table.innerHTML = `<tr><th>User</th><th>Duration</th><th>Reason</th></tr>`;
 
-  if (history) {
-    Object.values(history).reverse().forEach(ban => {
-      table.innerHTML += `<tr><td>${ban.target}</td><td>${ban.duration}</td><td>${ban.reason}</td></tr>`;
+
+  const response =
+  await fetch(FIREBASE_DATABASE + HISTORY_LOCATION);
+
+
+
+  const history =
+  await response.json();
+
+
+
+  const table =
+  document.getElementById("historyTable");
+
+
+
+  table.innerHTML =
+  `<tr><th>User</th><th>Duration</th><th>Reason</th></tr>`;
+
+
+
+  if(history) {
+
+
+    Object.values(history)
+    .reverse()
+    .forEach(ban => {
+
+
+      table.innerHTML +=
+
+
+      `
+
+      <tr>
+
+      <td>${ban.target}</td>
+
+      <td>${ban.duration} minutes</td>
+
+      <td>${ban.reason}</td>
+
+      </tr>
+
+      `;
+
+
     });
+
+
   }
+
+
 }
+
+
+
 
 updateDurations();
 </script>
