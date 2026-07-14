@@ -114,53 +114,6 @@ end
 
 
 
--- Checks if a timed kick is still active
-local function isKickActive(command)
-
-
-	if not command.expiresAt then
-
-		return false, 0
-
-	end
-
-
-
-	-- Firebase uses milliseconds
-	-- Roblox uses seconds
-
-	local expireTime =
-	command.expiresAt / 1000
-
-
-
-	local currentTime =
-	os.time()
-
-
-
-	local remainingSeconds =
-	expireTime - currentTime
-
-
-
-	local remainingMinutes =
-	math.floor(
-		remainingSeconds / 60
-	)
-
-
-
-	return currentTime < expireTime, remainingMinutes
-
-end
-
-
-
-
-
-
-
 while true do
 
 
@@ -187,60 +140,9 @@ while true do
 
 
 
-				if command.action == "kick" then
+				
+				if command.action == "ban" then
 
-
-
-					local active, remaining =
-					isKickActive(command)
-
-
-
-					if active then
-
-
-
-						if player then
-
-
-
-							player:Kick(
-
-								"Removed by moderator: "
-								..
-								command.reason
-								..
-								"\nTime remaining: "
-								..
-								remaining
-								..
-								" minutes"
-
-							)
-
-
-
-						end
-
-
-
-					else
-
-
-						-- Kick expired
-
-						completeCommand(id)
-
-
-
-					end
-
-
-
-
-
-
-				elseif command.action == "ban" then
 
 
 
