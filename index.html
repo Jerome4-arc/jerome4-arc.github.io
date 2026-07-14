@@ -1,3 +1,5 @@
+Code
+
 <!DOCTYPE html>
 <html lang="en">
 
@@ -8,7 +10,6 @@
 
 <title>Roblox Moderation Panel</title>
 
-
 <style>
 
 *{
@@ -18,427 +19,214 @@
     font-family:Arial, sans-serif;
 }
 
-
 body{
-
     background:#111318;
     color:white;
     display:flex;
     height:100vh;
-
 }
 
-
-/* Sidebar */
-
 .sidebar{
-
     width:240px;
     background:#1c2028;
     padding:25px;
-
 }
-
 
 .sidebar h2{
-
     text-align:center;
     margin-bottom:30px;
-
 }
-
-
 
 .sidebar button{
-
     width:100%;
     padding:13px;
-
     margin-bottom:12px;
-
     background:#2d333d;
     color:white;
-
     border:none;
     border-radius:8px;
-
     cursor:pointer;
-
 }
-
-
 
 .sidebar button:hover{
-
     background:#3b82f6;
-
 }
-
-
-
-
-
-/* Main */
 
 .main{
-
     flex:1;
     padding:40px;
-
 }
-
-
-
 
 .card{
-
     background:#1c2028;
-
     padding:30px;
-
     border-radius:12px;
-
     width:600px;
-
 }
-
-
-
 
 h1{
-
     margin-bottom:25px;
-
 }
-
-
-
-
 
 label{
-
     display:block;
-
     margin-top:15px;
-
     margin-bottom:6px;
-
     font-weight:bold;
-
 }
-
-
-
-
 
 input,
 select,
 textarea{
-
-
     width:100%;
-
     padding:12px;
-
     background:#2d333d;
-
     color:white;
-
     border:none;
-
     border-radius:8px;
-
-
 }
-
-
 
 textarea{
-
     height:100px;
-
     resize:none;
-
 }
-
-
-
-
 
 .execute{
-
     width:100%;
-
     padding:14px;
-
     margin-top:20px;
-
-
     background:#3b82f6;
-
     color:white;
-
-
     border:none;
-
     border-radius:8px;
-
     cursor:pointer;
-
-
 }
-
-
-
 
 .execute:hover{
-
     background:#2563eb;
-
 }
-
-
-
-
 
 .hidden{
-
     display:none;
-
 }
-
-
-
-
 
 #status{
-
     margin-top:15px;
-
     color:#6ee7b7;
-
     text-align:center;
-
 }
-
-
-
-
-
-/* Tables */
-
 
 table{
-
     width:100%;
-
     margin-top:20px;
-
     border-collapse:collapse;
-
-
 }
-
-
 
 th,
 td{
-
     padding:10px;
-
     border-bottom:1px solid #333;
-
     text-align:left;
-
 }
-
-
 
 </style>
 
-
 </head>
-
 
 <body>
 
-
-
-
-
 <div class="sidebar">
-
 
 <h2>
 Admin Panel
 </h2>
 
-
-
 <button onclick="openPage('moderation')">
-
 Moderation
-
 </button>
-
-
-
 
 <button onclick="openPage('history')">
-
 Ban History
-
 </button>
-
-
-
-
 
 <button onclick="openPage('logs')">
-
 Logs
-
 </button>
 
-
-
 </div>
-
-
-
-
-
-
-
 
 
 <div class="main">
 
 
-
-
-
-<!-- MODERATION PAGE -->
-
-
 <div id="moderation">
 
-
 <div class="card">
-
-
 
 <h1>
 Moderation
 </h1>
 
-
-
-
-
-
 <label>
 Target Type
 </label>
 
-
 <select id="targetType">
-
 
 <option value="username">
 Username
 </option>
 
-
 <option value="userid">
 User ID
 </option>
 
-
 </select>
-
-
-
-
-
 
 
 <label>
 Target
 </label>
 
-
 <input 
 id="target"
 placeholder="Username or User ID">
-
-
-
-
-
 
 
 <label>
 Action
 </label>
 
-
 <select id="action" onchange="updateDurations()">
-
-
-
-<option value="kick">
-Kick
-</option>
-
-
 
 <option value="ban">
 Ban
 </option>
 
+<option value="unban">
+Unban
+</option>
 
 </select>
-
-
-
-
-
-
 
 
 <label>
 Duration
 </label>
 
-
 <select id="duration">
 
 </select>
-
-
-
-
-
-
 
 
 <label>
 Reason
 </label>
 
-
 <textarea 
 id="reason"
 placeholder="Reason for action">
 </textarea>
-
-
-
-
-
-
-
 
 
 <button class="execute" onclick="sendCommand()">
@@ -448,46 +236,24 @@ Execute
 </button>
 
 
-
-
-
-
 <p id="status"></p>
 
 
-
-
-
 </div>
 
-
 </div>
-
-
-
-
-
-
-
-
 
 <!-- BAN HISTORY PAGE -->
 
-
 <div id="history" class="hidden">
 
-
 <div class="card">
-
 
 <h1>
 Ban History
 </h1>
 
-
-
 <table id="historyTable">
-
 
 <tr>
 
@@ -495,54 +261,36 @@ Ban History
 User
 </th>
 
-
 <th>
 Duration
 </th>
-
 
 <th>
 Reason
 </th>
 
-
 </tr>
-
 
 </table>
 
-
-
 </div>
 
-
 </div>
-
-
-
-
-
 
 
 
 
 <!-- LOGS PAGE -->
 
-
 <div id="logs" class="hidden">
 
-
 <div class="card">
-
 
 <h1>
 Logs
 </h1>
 
-
-
 <table id="logsTable">
-
 
 <tr>
 
@@ -550,46 +298,32 @@ Logs
 Action
 </th>
 
-
 <th>
 User
 </th>
-
 
 <th>
 Date
 </th>
 
-
 </tr>
-
 
 </table>
 
-
-
+</div>
 
 </div>
 
 
 </div>
 
-
-
-
-
-</div>
 
 <script>
-/*
-FIREBASE REALTIME DATABASE CONFIG
 
-This is your logging database:
-https://moderationpanel-86889-default-rtdb.firebaseio.com/
-*/
 
 const FIREBASE_DATABASE =
 "https://moderationpanel-86889-default-rtdb.firebaseio.com";
+
 
 const COMMAND_LOCATION = "/commands.json";
 const LOG_LOCATION = "/logs.json";
@@ -630,6 +364,7 @@ function openPage(page) {
 
 function updateDurations() {
 
+
   const action =
   document.getElementById("action").value;
 
@@ -642,23 +377,7 @@ function updateDurations() {
 
 
 
-  if(action === "kick") {
-
-
-    duration.innerHTML = `
-
-      <option value="30">30 Minutes</option>
-      <option value="60">1 Hour</option>
-      <option value="120">2 Hours</option>
-      <option value="360">6 Hours</option>
-      <option value="720">12 Hours</option>
-      <option value="1440">1 Day</option>
-      <option value="1">1 Minute</option>
-
-    `;
-
-
-  } else {
+  if(action === "ban") {
 
 
     duration.innerHTML = `
@@ -671,13 +390,227 @@ function updateDurations() {
 
     `;
 
+
+  } else {
+
+
+    duration.innerHTML = `
+
+      <option value="0">No Duration</option>
+
+    `;
+
+
   }
+
 
 }
 
 
 
 
+async function unbanUser(target) {
+
+  let removed = false;
+
+
+  // Remove from ban history
+  const historyResponse =
+  await fetch(FIREBASE_DATABASE + HISTORY_LOCATION);
+
+
+  const history =
+  await historyResponse.json();
+
+
+
+  if(history) {
+
+    for(const id in history) {
+
+
+      if(
+        history[id].target.toLowerCase()
+        === target.toLowerCase()
+      ) {
+
+
+        await fetch(
+          FIREBASE_DATABASE + "/banHistory/" + id + ".json",
+          {
+            method:"DELETE"
+          }
+        );
+
+
+        removed = true;
+
+
+      }
+
+
+    }
+
+  }
+
+
+
+
+
+  // Remove ban commands
+  const commandResponse =
+  await fetch(FIREBASE_DATABASE + COMMAND_LOCATION);
+
+
+  const commands =
+  await commandResponse.json();
+
+
+
+  if(commands) {
+
+    for(const id in commands) {
+
+
+      if(
+        commands[id].target.toLowerCase()
+        === target.toLowerCase()
+        &&
+        commands[id].action === "ban"
+      ) {
+
+
+        await fetch(
+          FIREBASE_DATABASE + "/commands/" + id + ".json",
+          {
+            method:"DELETE"
+          }
+        );
+
+
+        removed = true;
+
+
+      }
+
+
+    }
+
+  }
+
+
+
+  return removed;
+
+}
+
+
+
+
+async function deleteLogEntry(logId) {
+
+
+  if(!logId) {
+
+    return;
+
+  }
+
+
+  await fetch(
+    FIREBASE_DATABASE + "/logs/" + logId + ".json",
+    {
+      method:"DELETE"
+    }
+  );
+
+
+}
+
+
+
+async function cleanupExpiredLogs() {
+
+
+  const response =
+  await fetch(FIREBASE_DATABASE + LOG_LOCATION);
+
+
+  const logs =
+  await response.json();
+
+
+  if(!logs) {
+
+    return;
+
+  }
+
+
+  const now =
+  Date.now();
+
+
+  for(const id in logs) {
+
+
+    const log =
+    logs[id];
+
+
+    if(
+      log &&
+      typeof log.expiresAt === "number" &&
+      log.expiresAt <= now
+    ) {
+
+
+      await deleteLogEntry(id);
+
+
+    }
+
+
+  }
+
+
+}
+
+
+
+function scheduleLogDeletion(logId, expiresAt) {
+
+
+  if(!logId || !expiresAt) {
+
+    return;
+
+  }
+
+
+  const delay =
+  expiresAt - Date.now();
+
+
+  if(delay <= 0) {
+
+    deleteLogEntry(logId);
+
+    return;
+
+  }
+
+
+  setTimeout(() => {
+
+
+    deleteLogEntry(logId);
+
+
+  }, delay);
+
+
+}
 
 
 
@@ -688,12 +621,82 @@ async function sendCommand() {
   document.getElementById("target").value;
 
 
+
   if(target.trim() === "") {
+
 
     document.getElementById("status").innerText =
     "Enter a target.";
 
+
     return;
+
+
+  }
+
+
+
+  const action =
+  document.getElementById("action").value;
+
+
+
+  if(action === "unban") {
+
+
+    const removed =
+    await unbanUser(target);
+
+
+
+    await fetch(FIREBASE_DATABASE + LOG_LOCATION, {
+
+
+      method:"POST",
+
+
+      headers:{
+
+
+        "Content-Type":"application/json"
+
+
+      },
+
+
+      body:JSON.stringify({
+
+
+        action:"unban",
+
+
+        target:target,
+
+
+        reason:"User unbanned",
+
+
+        createdAt:Date.now()
+
+
+      })
+
+
+    });
+
+
+
+    document.getElementById("status").innerText =
+
+    removed
+
+    ? "User unbanned."
+
+    : "No ban found, but unban logged.";
+
+
+    return;
+
 
   }
 
@@ -701,7 +704,6 @@ async function sendCommand() {
 
   const createdAt =
   Date.now();
-
 
 
   let durationValue =
@@ -715,8 +717,6 @@ async function sendCommand() {
 
   if(durationValue === "permanent") {
 
-
-    // 50 years in minutes
 
     durationMinutes =
     50 * 365 * 24 * 60;
@@ -733,8 +733,6 @@ async function sendCommand() {
 
 
 
-
-
   const command = {
 
 
@@ -747,26 +745,19 @@ async function sendCommand() {
 
 
     action:
-    document.getElementById("action").value,
+    action,
 
-
-    // minutes
 
     duration:
     durationMinutes,
 
 
-    // UTC milliseconds
-
     createdAt:
     createdAt,
 
 
-    // UTC milliseconds
-
     expiresAt:
     createdAt + (durationMinutes * 60 * 1000),
-
 
 
     reason:
@@ -775,75 +766,89 @@ async function sendCommand() {
 
   };
 
-
-
-
   try {
-
 
 
     await fetch(FIREBASE_DATABASE + COMMAND_LOCATION, {
 
+
       method:"POST",
+
 
       headers:{
 
+
         "Content-Type":"application/json"
+
 
       },
 
-      body:
 
-      JSON.stringify(command)
+      body:JSON.stringify(command)
+
 
     });
 
 
 
 
-
-
+    const logResponse =
     await fetch(FIREBASE_DATABASE + LOG_LOCATION, {
+
 
       method:"POST",
 
+
       headers:{
+
 
         "Content-Type":"application/json"
 
+
       },
 
-      body:
 
-      JSON.stringify({
-
-        action:
-        command.action,
+      body:JSON.stringify({
 
 
-        target:
-        command.target,
+        action:command.action,
 
 
-        reason:
-        command.reason,
+        target:command.target,
 
 
-        createdAt:
-        createdAt
+        reason:command.reason,
+
+
+        createdAt:createdAt,
+
+
+        expiresAt:command.expiresAt
+
 
       })
 
+
     });
 
 
 
-
+    const logResult =
+    await logResponse.json();
 
 
 
     if(command.action === "ban") {
 
+
+      scheduleLogDeletion(logResult.name, command.expiresAt);
+
+
+    }
+
+
+
+    if(command.action === "ban") {
 
 
       await fetch(FIREBASE_DATABASE + HISTORY_LOCATION, {
@@ -854,14 +859,14 @@ async function sendCommand() {
 
         headers:{
 
+
           "Content-Type":"application/json"
+
 
         },
 
 
-        body:
-
-        JSON.stringify(command)
+        body:JSON.stringify(command)
 
 
       });
@@ -872,12 +877,8 @@ async function sendCommand() {
 
 
 
-
-
     document.getElementById("status").innerText =
     "Command sent to Roblox system.";
-
-
 
 
 
@@ -890,12 +891,11 @@ async function sendCommand() {
     document.getElementById("status").innerText =
     "Failed to send command.";
 
+
   }
 
 
 }
-
-
 
 
 
@@ -932,9 +932,7 @@ async function loadLogs() {
     .forEach(log => {
 
 
-      table.innerHTML +=
-
-      `
+      table.innerHTML += `
 
       <tr>
 
@@ -956,8 +954,6 @@ async function loadLogs() {
 
 
 }
-
-
 
 
 
@@ -995,10 +991,7 @@ async function loadHistory() {
     .forEach(ban => {
 
 
-      table.innerHTML +=
-
-
-      `
+      table.innerHTML += `
 
       <tr>
 
@@ -1024,7 +1017,19 @@ async function loadHistory() {
 
 
 
+
 updateDurations();
+
+setInterval(() => {
+
+  cleanupExpiredLogs();
+
+}, 10000);
+
+
 </script>
+
+
 </body>
+
 </html>
